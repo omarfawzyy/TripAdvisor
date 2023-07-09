@@ -25,25 +25,33 @@ app.get("/trips", (req, res) => {
 });
 
 
- app.get("/filtered/:maxBudget", (req, res) => {
+ app.get("/trips/filterByBudget/:maxBudget", (req, res) => {
    const maxBudget = req.params.maxBudget;
-   const q = "SELECT * FROM costs WHERE accomodation < " + maxBudget;
+   if(0 > parseInt(maxBudget)){
+    res.status('400');
+   }
+   const q = "SELECT * FROM costs WHERE dialyspending < " + maxBudget;
    db.query(q, (err, data) => {
      if (err) {
        console.log(err);
        return res.json(err);
      }
+     console.log(data)
      return res.json(data);   });
  });
  
- app.get("/filtered/:maxBudget/:", (req, res) => {
-  const maxBudget = req.params.maxBudget;
-  const q = "SELECT * FROM costs WHERE accomodation < " + maxBudget;
+ app.get("/trips/cities/:city", (req, res) => {
+  const city = req.params.city;
+  const q = "SELECT * FROM costs WHERE city = '" + city +"'";
   db.query(q, (err, data) => {
     if (err) {
       console.log(err);
       return res.json(err);
     }
+     console.log(data);
+     if(data.length == 0){
+      res.status('404');
+     }
     return res.json(data);   });
 });
 
